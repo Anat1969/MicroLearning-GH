@@ -45,7 +45,7 @@ check('legend explains the category color', legend.includes(':'), legend);
 
 await page.getByRole('button', { name: /התחל תרגול|לתרגול של היום/ }).click();
 await page.getByRole('button', { name: 'הבא: כתיבה' }).click();
-await page.getByLabel('כתיבה').fill('טיוטה פרטית שלא תשותף בכרטיס.');
+await page.getByLabel('כתיבה', { exact: true }).fill('טיוטה פרטית שלא תשותף בכרטיס.');
 await page.getByRole('button', { name: 'הבא: הצהרה' }).click();
 await page.getByRole('button', { name: 'אמרתי את זה לעצמי' }).click();
 await page.getByRole('button', { name: 'סיימתי היום', exact: true }).click();

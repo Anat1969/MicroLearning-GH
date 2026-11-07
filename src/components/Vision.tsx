@@ -1,78 +1,80 @@
+import { useEffect, useState, type CSSProperties } from 'react';
 import { IconListen, IconSay, IconWrite } from './icons';
 
-interface Props {
-  onStart: () => void;
-}
+const STAGES = [
+  { name: 'האזנה', min: 1, text: 'שיר אחד ומסר אחד', Icon: IconListen },
+  { name: 'כתיבה', min: 3, text: 'לכתוב או להקליט, מה המסר אומר לי', Icon: IconWrite },
+  { name: 'הצהרה', min: 1, text: 'משפט אחד, בקול', Icon: IconSay },
+];
+
+const AUTO_MS = 12000;
 
 /**
- * מסך החזון: מה האפליקציה מבקשת לעשות, למה, ואיך משתמשים בה.
- * הגרפיקה היא שרטוט מופשט של אריחים וטבעות, בלי תמונות סטוק.
+ * דף החזון: הדף הראשון בכל פתיחה, ואחריו "היום".
+ * החזון בשורה אחת, חמש הדקות כציר זמן באורכים אמיתיים (1, 3, 1), והייקו.
+ * מעבר אוטומטי להיום, שנעצר ברגע שהמשתמשת נוגעת או גוללת.
  */
-export function Vision({ onStart }: Props) {
+export function Vision({ onStart }: { onStart: () => void }) {
+  const [auto, setAuto] = useState(true);
+
+  useEffect(() => {
+    if (!auto) return;
+    const t = window.setTimeout(onStart, AUTO_MS);
+    const stop = () => setAuto(false);
+    window.addEventListener('wheel', stop, { once: true });
+    window.addEventListener('touchmove', stop, { once: true });
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener('wheel', stop);
+      window.removeEventListener('touchmove', stop);
+    };
+  }, [auto, onStart]);
+
   return (
-    <section className="vision stack">
-      <div className="vision-hero">
-        <svg className="vision-art" viewBox="0 0 320 320" aria-hidden="true">
-          {[40, 58, 76, 94, 112, 130, 148].map((r, i) => (
-            <circle
-              key={r}
-              cx="160"
-              cy="160"
-              r={r}
-              fill="none"
-              className={i < 3 ? 'vision-ring lit' : 'vision-ring'}
-              style={{ animationDelay: `${i * 120}ms` }}
-            />
-          ))}
-          <rect x="136" y="136" width="48" height="48" rx="14" className="vision-tile" />
-        </svg>
-        <h1>שיר אחד ביום. חמש דקות לעצמך.</h1>
-      </div>
+    <section className="vision" aria-labelledby="vision-title">
+      <p className="eyebrow rise">החזון</p>
+      <h1 id="vision-title" className="vision-title rise" style={{ animationDelay: '0.15s' }}>
+        שיר אחד ביום
+        <br />
+        <span className="shine-text">הופך לצעד אחד</span>
+      </h1>
+      <p className="vision-lead rise" style={{ animationDelay: '0.35s' }}>
+        נשים שבוחרות לעצמן, <strong>בצעד קטן ויומיומי.</strong>
+        <br />
+        <strong>חמש דקות</strong> שמחברות את המסר של השיר לפעולה אחת בחיים.
+      </p>
 
-      <article className="card">
-        <h2>החזון</h2>
-        <p>נשים שבוחרות לעצמן, בצעד קטן ויומיומי, כל יום.</p>
-      </article>
-
-      <article className="card">
-        <h2>המטרה</h2>
-        <p>להפוך השראה להרגל. כל יום שיר אחד, ותרגול קצר שמחבר את המסר לפעולה אחת בחיים.</p>
-      </article>
-
-      <article className="card how">
-        <h2>איך משתמשים</h2>
-        <ol className="how-steps">
-          <li>
-            <span className="how-icon"><IconListen /></span>
-            <div>
-              <strong>האזנה</strong>
-              <span className="muted small">פותחים את השיר בקישור החיצוני, ומקשיבים לו.</span>
-            </div>
+      <ol className="timeline rise" style={{ animationDelay: '0.55s' }} aria-label="איך משתמשים: חמש הדקות, לפי זמן">
+        {STAGES.map(({ name, min, text, Icon }, i) => (
+          <li key={name} className="tl-item" style={{ flexGrow: min, animationDelay: `${0.75 + i * 0.2}s` }}>
+            <span className="tl-bar" />
+            <span className="tl-head">
+              <Icon />
+              <strong>{name}</strong>
+            </span>
+            <span className="tl-min">{min === 1 ? 'דקה' : `${min} דקות`}</span>
+            <span className="tl-text">{text}</span>
           </li>
-          <li>
-            <span className="how-icon"><IconWrite /></span>
-            <div>
-              <strong>כתיבה</strong>
-              <span className="muted small">שלוש דקות עם טיימר. אפשר לכתוב או להקליט, והטקסט נשמר אוטומטית.</span>
-            </div>
-          </li>
-          <li>
-            <span className="how-icon"><IconSay /></span>
-            <div>
-              <strong>הצהרה</strong>
-              <span className="muted small">אומרים לעצמך את משפט המפתח בקול, וסוגרים את היום.</span>
-            </div>
-          </li>
-        </ol>
-      </article>
+        ))}
+      </ol>
 
-      <article className="card">
-        <h2>מה האפליקציה לא עושה</h2>
-        <p className="muted small">היא לא מציגה מילות שירים מלאות, כי הן מוגנות זכויות יוצרים. היא לא שולחת את הכתיבה שלך לשרת: הכול נשמר במכשיר.</p>
-      </article>
+      <blockquote className="haiku vision-haiku rise" style={{ animationDelay: '1.2s' }} aria-label="הייקו">
+        <span>צְלִיל בַּבֹּקֶר</span>
+        <span>מִלָּה אַחַת עַל הַדַּף</span>
+        <span>וְהַיּוֹם מַתְחִיל</span>
+      </blockquote>
 
-      <button className="primary" onClick={onStart}>
-        להתחיל את היום
+      <p className="small muted rise" style={{ animationDelay: '1.35s' }}>
+        בלי מילות שירים מלאות (זכויות יוצרים), והכתיבה נשמרת רק במכשיר שלך.
+      </p>
+
+      <button
+        className={`primary enter rise ${auto ? 'auto' : ''}`}
+        style={{ animationDelay: '1.45s', '--auto': `${AUTO_MS}ms` } as CSSProperties}
+        onClick={onStart}
+      >
+        <span className="enter-fill" aria-hidden="true" />
+        <span className="enter-label">לשיר של היום</span>
       </button>
     </section>
   );

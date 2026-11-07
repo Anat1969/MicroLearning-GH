@@ -1,5 +1,5 @@
 // שירות מינימלי: מטמון של נכסי הבנייה, רשת קודם לדף הבית, כך שהאפליקציה נפתחת גם בלי רשת.
-const CACHE = 'shir-hayom-v2';
+const CACHE = 'shir-hayom-v3';
 const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
