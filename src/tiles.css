@@ -1,0 +1,220 @@
+/*
+ * שפת האריחים: משטח אפור מט, אריחים מרובעים מוגבהים בפינות עגולות, וזוהר לבן
+ * בקצה של אריח שפעיל. מקור ההשראה: מסך בית אפור עם אריחים מוארים מאחור.
+ * הטקסט נשאר קריא לפי יחס ניגודיות, והצבע של התחום נשאר משמעותי.
+ */
+:root {
+  --paper: #5a5a5d;
+  --ink: #f5f5f3;
+  --muted: #c9c9cc;
+  --line: rgba(255, 255, 255, 0.14);
+  --soft: transparent;
+  --accent: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.12);
+  --marker: #fff1a8;
+  --tile-top: #6c6c70;
+  --tile-bottom: #55555a;
+  --tile-deep: #3d3d41;
+  --glow: rgba(255, 255, 255, 0.55);
+  --shadow: rgba(0, 0, 0, 0.38);
+  color-scheme: dark;
+}
+
+html {
+  background: radial-gradient(ellipse at 50% 20%, #6b6b6f 0%, #5a5a5e 55%, #4a4a4e 100%) #4a4a4e;
+  min-height: 100%;
+}
+
+body {
+  background: transparent;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.topbar {
+  background: transparent;
+  border-bottom: 0;
+}
+
+.brand {
+  letter-spacing: 0.01em;
+}
+
+.tab {
+  border-radius: 999px;
+  color: var(--muted);
+  padding: 8px 14px;
+}
+
+.tab.on {
+  color: #111111;
+  background: linear-gradient(180deg, #ffffff, #d9d9dc);
+  box-shadow: 0 0 16px var(--glow), 0 6px 14px var(--shadow);
+  font-weight: 700;
+}
+
+.tab.on {
+  box-shadow: 0 0 16px var(--glow), 0 6px 14px var(--shadow);
+}
+
+/* אריח: מוגבה, בלי קו מסגרת */
+.card {
+  background: linear-gradient(160deg, var(--tile-top), var(--tile-bottom));
+  border-radius: 28px;
+  box-shadow: 0 14px 28px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  padding: 24px;
+}
+
+/* אריח פעיל: זוהר לבן מהקצה, כמו במסך המקור */
+.card.song,
+.poster {
+  box-shadow: 0 0 26px var(--glow), 0 14px 28px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.poster {
+  background: linear-gradient(160deg, var(--tile-top), var(--tile-deep));
+  border-radius: 32px;
+  padding: 24px;
+}
+
+.poster-day {
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+}
+
+.poster-quote {
+  color: #ffffff;
+}
+
+.poster-quote mark,
+mark {
+  color: #111111;
+  border-radius: 6px;
+}
+
+.poster-source,
+.muted {
+  color: var(--muted);
+}
+
+/* כפתור ראשי: כפתור ארוך, כמו הפס התחתון במסך המקור */
+.primary {
+  background: linear-gradient(180deg, #4a4a4f, #2f2f33);
+  color: #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 0 24px var(--glow), 0 12px 22px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.primary:disabled {
+  opacity: 0.45;
+}
+
+/* כפתור משני: אריח קטן מוגבה */
+.ghost {
+  background: linear-gradient(160deg, var(--tile-top), var(--tile-bottom));
+  color: var(--ink);
+  border: 0;
+  border-radius: 22px;
+  box-shadow: 0 10px 20px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.ghost.small {
+  border-radius: 16px;
+}
+
+/* שבב: כמו התווית "16 PRO MAX" */
+.chip {
+  color: #ffffff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.song .chip {
+  color: #ffffff;
+  border-color: var(--tone, #ffffff);
+}
+
+.link,
+.link-btn {
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+  text-underline-offset: 4px;
+}
+
+/* נקודות השבוע: אריחים קטנים, פעיל זורח */
+.dot {
+  border-radius: 30%;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(160deg, var(--tile-top), var(--tile-bottom));
+  border: 0;
+  box-shadow: 0 6px 12px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.dot.on {
+  background: linear-gradient(160deg, #ffffff, #cfcfd2);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.dot.now {
+  box-shadow: 0 0 0 3px rgba(255, 241, 168, 0.8);
+}
+
+/* שדות קלט: שקועים, כמו חור בלוח */
+textarea,
+input,
+select {
+  background: var(--tile-deep);
+  border: 0;
+  border-radius: 18px;
+  color: var(--ink);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+label {
+  color: var(--muted);
+}
+
+.steps button {
+  background: linear-gradient(160deg, var(--tile-top), var(--tile-bottom));
+  border: 0;
+  border-radius: 18px;
+  color: var(--muted);
+  box-shadow: 0 8px 16px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.step.on button {
+  color: #ffffff;
+  box-shadow: 0 0 18px var(--glow), 0 8px 16px var(--shadow);
+  border: 0;
+}
+
+.share blockquote {
+  background: var(--tile-deep);
+  border-radius: 18px;
+  border-inline-start: 3px solid rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+}
+
+.card-preview {
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 0 22px var(--glow);
+}
+
+.thread,
+.yesterday {
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+
+.legend .swatch {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.error {
+  color: #ffb4ab;
+}
