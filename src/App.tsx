@@ -8,6 +8,7 @@ import {
   loadStore,
   saveStore,
   songForDate,
+  shiftKey,
   streak,
   weekKeys,
 } from './lib/store';
@@ -167,6 +168,9 @@ function TodayView(p: TodayProps) {
   const tone = CATEGORY_TONE[p.song.category];
   const [y, m, d] = p.today.split('-').map(Number);
   const dayDate = new Date(y, m - 1, d);
+  const yKey = shiftKey(p.today, -1);
+  const yesterdayEntry = p.store.entries[yKey];
+  const yesterdaySong = yesterdayEntry ? p.songs.find((x) => x.id === yesterdayEntry.songId) : undefined;
   const monthName = dayDate.toLocaleDateString('he-IL', { month: 'long' });
   const weekday = dayDate.toLocaleDateString('he-IL', { weekday: 'long' });
 
@@ -178,8 +182,14 @@ function TodayView(p: TodayProps) {
         monthName={monthName}
         weekday={weekday}
         message={p.song.message}
-        doneCount={p.doneThisWeek}
+        keyPhrase={p.song.keyPhrase}
+        title={p.song.title}
       />
+      {yesterdaySong && yesterdayEntry?.done && (
+        <p className="yesterday">
+          אתמול: <strong>{yesterdaySong.practice.declaration}</strong>
+        </p>
+      )}
 
       <article className="card song" style={{ '--tone': tone } as CSSProperties}>
         <span className="chip">{p.song.category}</span>
@@ -550,6 +560,7 @@ function AddSongView({ onAdd }: { onAdd: (song: Song) => void }) {
       message: message.trim(),
       listenQuery: listenQuery.trim() || `${title.trim()} ${artist.trim()}`.trim(),
       practice: { writePrompt: writePrompt.trim(), action: action.trim() || 'עמדי מול המראה ואמרי את ההצהרה בקול.', declaration: declaration.trim() },
+      keyPhrase: message.trim(),
       verified: false,
     });
   }

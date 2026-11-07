@@ -12,6 +12,7 @@ export interface Song {
   artist: string;
   category: Category;
   message: string;
+  keyPhrase: string;
   listenQuery: string;
   practice: Practice;
   verified: boolean;
