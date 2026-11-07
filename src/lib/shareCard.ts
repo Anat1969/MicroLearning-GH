@@ -1,10 +1,9 @@
 import type { Song } from '../types';
-import { CATEGORY_TONE } from './tone';
+import { CATEGORY_HUE, CATEGORY_TONE } from './tone';
 
 const W = 1080;
 const H = 1350;
 const FONT = '"Segoe UI", Heebo, Arial, sans-serif';
-const MARKER = '#fff1a8';
 
 /** מחלק טקסט לשורות לפי רוחב מקסימלי, בעברית מימין לשמאל. */
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
@@ -36,19 +35,32 @@ export async function buildShareCard(song: Song, dateLabel: string): Promise<Blo
   if (!ctx) throw new Error('canvas not supported');
 
   const tone = CATEGORY_TONE[song.category];
+  const hue = CATEGORY_HUE[song.category];
   const right = W - 110;
 
-  ctx.fillStyle = '#ffffff';
+  // במה כהה בגוון התחום, עם שדות אור רכים: אותה שפה כמו המסך.
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, `hsl(${hue} 55% 9%)`);
+  bg.addColorStop(1, `hsl(${(hue + 40) % 360} 60% 18%)`);
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
-  // פס צבע של התחום בקצה הימני: הצבע מסמן משמעות, לא קישוט.
-  ctx.fillStyle = tone;
-  ctx.fillRect(W - 28, 0, 28, H);
+  const glows: [number, number, number, number][] = [
+    [W * 0.8, H * 0.12, 520, hue],
+    [W * 0.15, H * 0.85, 460, (hue + 45) % 360],
+  ];
+  for (const [x, y, r, h] of glows) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `hsla(${h}, 85%, 55%, 0.55)`);
+    g.addColorStop(1, `hsla(${h}, 85%, 55%, 0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+  }
 
   ctx.direction = 'rtl';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'top';
 
-  ctx.fillStyle = '#6b6b6b';
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
   ctx.font = `500 42px ${FONT}`;
   ctx.fillText('שיר היום', right, 110);
 
@@ -56,7 +68,7 @@ export async function buildShareCard(song: Song, dateLabel: string): Promise<Blo
   ctx.font = `700 40px ${FONT}`;
   ctx.fillText(song.category, right, 176);
 
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = '#ffffff';
   ctx.font = `800 104px ${FONT}`;
   const titleLines = wrapLines(ctx, song.title, W - 260);
   let y = 300;
@@ -65,25 +77,31 @@ export async function buildShareCard(song: Song, dateLabel: string): Promise<Blo
     y += 120;
   }
 
-  // ההצהרה מקבלת מרקר צהוב, בדיוק כמו התובנה במסך.
+  // ההצהרה בלבן מודגש, בלי מרקר.
   ctx.font = `700 58px ${FONT}`;
   const declLines = wrapLines(ctx, song.practice.declaration, W - 260);
-  let dy = y + 110;
-  const lineH = 84;
+  let dy = y + 90;
   for (const line of declLines) {
-    const w = ctx.measureText(line).width;
-    ctx.fillStyle = MARKER;
-    ctx.fillRect(right - w - 10, dy + 14, w + 20, lineH - 20);
-    ctx.fillStyle = '#111111';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(line, right, dy);
-    dy += lineH;
+    dy += 84;
   }
 
-  ctx.fillStyle = '#6b6b6b';
+  if (song.haiku?.length) {
+    ctx.font = `300 46px ${FONT}`;
+    let hy = dy + 70;
+    song.haiku.forEach((line, i) => {
+      ctx.fillStyle = i === 2 ? tone : 'rgba(255,255,255,0.78)';
+      ctx.fillText(line, right - i * 40, hy);
+      hy += 66;
+    });
+  }
+
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
   ctx.font = `500 38px ${FONT}`;
   ctx.fillText(dateLabel, right, H - 220);
 
-  ctx.fillStyle = '#111111';
+  ctx.fillStyle = '#ffffff';
   ctx.font = `600 36px ${FONT}`;
   ctx.fillText("אד' ענת שטיבלמן A&I", right, H - 130);
 

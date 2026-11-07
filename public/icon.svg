@@ -1,5 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="110" fill="#ffffff"/>
-  <rect x="330" y="96" width="86" height="320" rx="43" fill="#1f5f5b"/>
-  <circle cx="200" cy="330" r="92" fill="#111111"/>
+  <defs>
+    <radialGradient id="g" cx="0.7" cy="0.25" r="0.9">
+      <stop offset="0" stop-color="#8b6cff"/>
+      <stop offset="1" stop-color="#07080d"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#g)"/>
+  <g fill="#ffffff">
+    <rect x="136" y="236" width="34" height="140" rx="17" opacity="0.7"/>
+    <rect x="200" y="176" width="34" height="200" rx="17"/>
+    <rect x="264" y="136" width="34" height="240" rx="17"/>
+    <rect x="328" y="206" width="34" height="170" rx="17" opacity="0.85"/>
+  </g>
 </svg>

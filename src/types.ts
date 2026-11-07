@@ -16,6 +16,8 @@ export interface Song {
   listenQuery: string;
   practice: Practice;
   verified: boolean;
+  /** Three lines, 5-7-5 syllables. Original text, never song lyrics. */
+  haiku?: string[];
 }
 
 export interface Entry {

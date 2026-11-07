@@ -23,6 +23,7 @@ const entries = {
 };
 await page.evaluate((e) => localStorage.setItem('mdk.v1', JSON.stringify({ entries: e, customSongs: [], reminder: false })), entries);
 await page.reload({ waitUntil: 'networkidle' });
+await page.getByRole('button', { name: 'לשיר של היום' }).click();
 
 const items = await page.locator('.thread li').allInnerTexts();
 const pass = items.length === 2 && errors.length === 0;
