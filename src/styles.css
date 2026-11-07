@@ -396,3 +396,73 @@ label {
     font-size: 14px;
   }
 }
+
+/* רמה 999: היררכיה, צבע עם משמעות, מקרא, תובנה במרקר */
+.hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding-top: 4px;
+}
+
+.hero-day {
+  font-size: 88px;
+  line-height: 0.85;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  padding-bottom: 6px;
+}
+
+.song {
+  border-inline-end: 6px solid var(--tone, var(--accent));
+}
+
+.song .chip {
+  color: var(--tone, var(--accent));
+  background: transparent;
+  border: 1px solid var(--tone, var(--accent));
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 0;
+  color: var(--muted);
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.insight {
+  margin: 0;
+  font-size: 16px;
+}
+
+.card-preview {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

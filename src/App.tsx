@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import seedSongs from './data/songs.json';
 import type { Category, Entry, Song, Store } from './types';
 import {
@@ -11,6 +11,9 @@ import {
   streak,
   weekKeys,
 } from './lib/store';
+import { CATEGORY_MEANING, CATEGORY_TONE } from './lib/tone';
+import { weekInsight } from './lib/insight';
+import { buildShareCard } from './lib/shareCard';
 
 type View = 'today' | 'practice' | 'journal' | 'add';
 type Step = 1 | 2 | 3;
@@ -107,6 +110,7 @@ export default function App() {
             streak={currentStreak}
             week={week}
             store={store}
+            songs={songs}
             doneThisWeek={doneThisWeek}
             onStart={() => openPractice(today)}
             onRemind={setReminder}
@@ -148,6 +152,7 @@ interface TodayProps {
   streak: number;
   week: string[];
   store: Store;
+  songs: Song[];
   doneThisWeek: number;
   onStart: () => void;
   onRemind: () => void;
@@ -158,10 +163,23 @@ interface TodayProps {
 
 function TodayView(p: TodayProps) {
   const done = p.entry?.done ?? false;
+  const tone = CATEGORY_TONE[p.song.category];
+  const [y, m, d] = p.today.split('-').map(Number);
+  const dayDate = new Date(y, m - 1, d);
+  const monthName = dayDate.toLocaleDateString('he-IL', { month: 'long' });
+  const weekday = dayDate.toLocaleDateString('he-IL', { weekday: 'long' });
+
   return (
     <section className="stack">
-      <p className="date">{formatDate(p.today)}</p>
-      <article className="card song">
+      <div className="hero" aria-label={formatDate(p.today)}>
+        <span className="hero-day">{d}</span>
+        <span className="hero-meta">
+          <strong>{monthName}</strong>
+          <span className="muted">יום {weekday.replace('יום ', '')}</span>
+        </span>
+      </div>
+
+      <article className="card song" style={{ '--tone': tone } as CSSProperties}>
         <span className="chip">{p.song.category}</span>
         <h1>{p.song.title}</h1>
         <p className="artist">{p.song.artist}</p>
@@ -174,11 +192,22 @@ function TodayView(p: TodayProps) {
         {!p.song.verified && <p className="muted small">תוכן בטיוטה, לאימות אוצרת.</p>}
       </article>
 
+      <p className="legend small">
+        <span className="swatch" style={{ background: tone }} aria-hidden="true" />
+        <span>
+          {p.song.category}: {CATEGORY_MEANING[p.song.category]}.
+        </span>
+      </p>
+
       <button className="primary" onClick={p.onStart}>
         {done ? 'לתרגול של היום (בוצע)' : 'התחל תרגול, חמש דקות'}
       </button>
 
       <WeekMeter week={p.week} entries={p.store.entries} today={p.today} streak={p.streak} doneThisWeek={p.doneThisWeek} />
+
+      <p className="insight">
+        <mark>{weekInsight(p.store.entries, p.week, p.songs)}</mark>
+      </p>
 
       <div className="row">
         <button className="ghost" onClick={p.onRemind} disabled={p.reminderOn}>
@@ -390,6 +419,45 @@ function PracticeView({
 function ShareBox({ song }: { song: Song }) {
   const text = shareText(song);
   const [msg, setMsg] = useState('');
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [cardBlob, setCardBlob] = useState<Blob | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    const label = formatDate(dateKey());
+    buildShareCard(song, label)
+      .then((blob) => {
+        if (!alive) return;
+        setCardBlob(blob);
+        setPreviewUrl(URL.createObjectURL(blob));
+      })
+      .catch(() => alive && setMsg('לא הצלחנו לבנות את הכרטיס. אפשר לשתף טקסט.'));
+    return () => {
+      alive = false;
+    };
+  }, [song]);
+
+  useEffect(() => () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  async function shareCard() {
+    if (!cardBlob) return;
+    const file = new File([cardBlob], 'shir-hayom.png', { type: 'image/png' });
+    try {
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ title: APP_NAME, text, files: [file] });
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(cardBlob);
+      a.download = 'shir-hayom.png';
+      a.click();
+      setMsg('הכרטיס ירד למכשיר. אפשר להעלות אותו לסטורי.');
+    } catch {
+      setMsg('השיתוף בוטל או נכשל.');
+    }
+  }
 
   async function share() {
     try {
@@ -407,10 +475,14 @@ function ShareBox({ song }: { song: Song }) {
   return (
     <div className="share">
       <p className="small muted">שיתוף של מה שאת בוחרת לשתף (לא הכתיבה שלך):</p>
+      {previewUrl && <img className="card-preview" src={previewUrl} alt="כרטיס שיתוף של היום" />}
       <blockquote>{text}</blockquote>
       <div className="row">
+        <button className="primary inline" onClick={shareCard} disabled={!cardBlob}>
+          שיתוף כרטיס
+        </button>
         <button className="ghost small" onClick={share}>
-          שיתוף
+          שיתוף טקסט
         </button>
         <a
           className="ghost small link-btn"

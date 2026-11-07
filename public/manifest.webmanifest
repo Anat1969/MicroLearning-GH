@@ -1,0 +1,15 @@
+{
+  "name": "שיר היום",
+  "short_name": "שיר היום",
+  "description": "שיר אחד ביום, וחמש דקות של העצמה",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
