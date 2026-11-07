@@ -168,9 +168,14 @@ function TodayView(p: TodayProps) {
   const tone = CATEGORY_TONE[p.song.category];
   const [y, m, d] = p.today.split('-').map(Number);
   const dayDate = new Date(y, m - 1, d);
-  const yKey = shiftKey(p.today, -1);
-  const yesterdayEntry = p.store.entries[yKey];
-  const yesterdaySong = yesterdayEntry ? p.songs.find((x) => x.id === yesterdayEntry.songId) : undefined;
+  // עד שלושה ימים שבוצעו בשבעת הימים שלפני היום, מהחדש לישן: הקשר בין הימים (עיקרון 8).
+  const thread: { key: string; song: Song }[] = [];
+  for (let i = 1; i <= 7 && thread.length < 3; i++) {
+    const key = shiftKey(p.today, -i);
+    const entry = p.store.entries[key];
+    const song = entry?.done ? p.songs.find((x) => x.id === entry.songId) : undefined;
+    if (song) thread.push({ key, song });
+  }
   const monthName = dayDate.toLocaleDateString('he-IL', { month: 'long' });
   const weekday = dayDate.toLocaleDateString('he-IL', { weekday: 'long' });
 
@@ -185,10 +190,18 @@ function TodayView(p: TodayProps) {
         keyPhrase={p.song.keyPhrase}
         title={p.song.title}
       />
-      {yesterdaySong && yesterdayEntry?.done && (
-        <p className="yesterday">
-          אתמול: <strong>{yesterdaySong.practice.declaration}</strong>
-        </p>
+      {thread.length > 0 && (
+        <div className="thread">
+          <p className="small muted">הרצף שלך לפני היום</p>
+          <ol>
+            {thread.map((t) => (
+              <li key={t.key}>
+                <span className="small muted">{formatDate(t.key)}</span>
+                <span>{t.song.practice.declaration}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       )}
 
       <article className="card song" style={{ '--tone': tone } as CSSProperties}>
