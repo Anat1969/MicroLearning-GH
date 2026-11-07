@@ -22,6 +22,7 @@ page.on('console', (m) => m.type() === 'error' && consoleErrors.push(m.text()));
 page.on('pageerror', (e) => consoleErrors.push(String(e)));
 
 await page.goto(BASE, { waitUntil: 'networkidle' });
+await page.getByRole('button', { name: 'היום', exact: true }).click();
 check('html lang=he and dir=rtl', (await page.getAttribute('html', 'dir')) === 'rtl' && (await page.getAttribute('html', 'lang')) === 'he');
 check('today song rendered', await page.getByRole('heading', { level: 1 }).isVisible());
 const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

@@ -22,6 +22,7 @@ page.on('pageerror', (e) => errors.push(String(e)));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 
 await page.goto(BASE, { waitUntil: 'networkidle' });
+await page.getByRole('button', { name: 'היום', exact: true }).click();
 
 const manifest = await page.evaluate(async () => {
   const r = await fetch('/manifest.webmanifest');

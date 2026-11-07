@@ -16,8 +16,12 @@ import { CATEGORY_MEANING, CATEGORY_TONE } from './lib/tone';
 import { weekInsight } from './lib/insight';
 import { buildShareCard } from './lib/shareCard';
 import { DailyPoster } from './components/DailyPoster';
+import { Vision } from './components/Vision';
+import { IconAdd, IconJournal, IconToday, IconVision } from './components/icons';
 
-type View = 'today' | 'practice' | 'journal' | 'add';
+const REQ = <span className="req" aria-label="שדה חובה">*</span>;
+
+type View = 'vision' | 'today' | 'practice' | 'journal' | 'add';
 type Step = 1 | 2 | 3;
 
 const CATEGORIES: Category[] = ['ביטחון עצמי', 'התגברות על משבר', 'אהבה עצמית', 'קריירה', 'רוגע'];
@@ -35,7 +39,7 @@ function shareText(song: Song): string {
 
 export default function App() {
   const [store, setStore] = useState<Store>(() => loadStore());
-  const [view, setView] = useState<View>('today');
+  const [view, setView] = useState<View>(() => (Object.keys(loadStore().entries).length === 0 ? 'vision' : 'today'));
   const [activeKey, setActiveKey] = useState<string>(() => dateKey());
   const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
   const [notice, setNotice] = useState<string>('');
@@ -92,19 +96,24 @@ export default function App() {
           {APP_NAME}
         </button>
         <nav className="tabs" aria-label="ניווט">
+          <button className={view === 'vision' ? 'tab on' : 'tab'} onClick={() => setView('vision')}>
+            <IconVision /> <span>החזון</span>
+          </button>
           <button className={view === 'today' ? 'tab on' : 'tab'} onClick={() => setView('today')}>
-            היום
+            <IconToday /> <span>היום</span>
           </button>
           <button className={view === 'journal' ? 'tab on' : 'tab'} onClick={() => setView('journal')}>
-            יומן
+            <IconJournal /> <span>יומן</span>
           </button>
           <button className={view === 'add' ? 'tab on' : 'tab'} onClick={() => setView('add')}>
-            הוספת שיר
+            <IconAdd /> <span>הוספת שיר</span>
           </button>
         </nav>
       </header>
 
       <main className="content">
+        {view === 'vision' && <Vision onStart={() => setView('today')} />}
+
         {view === 'today' && todaySong && (
           <TodayView
             song={todaySong}
@@ -582,9 +591,10 @@ function AddSongView({ onAdd }: { onAdd: (song: Song) => void }) {
   return (
     <form className="card stack" onSubmit={submit}>
       <h2>הוספת שיר</h2>
+      <p className="small muted">{REQ} שדה חובה</p>
       <p className="small muted">השיר נשמר במכשיר הזה. כדי להפוך אותו לתוכן מאושר, יש לאמת אותו מול אוצרת.</p>
       <label>
-        שם השיר
+        <span>שם השיר {REQ}</span>
         <input value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label>
@@ -602,11 +612,11 @@ function AddSongView({ onAdd }: { onAdd: (song: Song) => void }) {
         </select>
       </label>
       <label>
-        המסר במשפט אחד
+        <span>המסר במשפט אחד {REQ}</span>
         <textarea rows={2} value={message} onChange={(e) => setMessage(e.target.value)} />
       </label>
       <label>
-        שאלת כתיבה
+        <span>שאלת כתיבה {REQ}</span>
         <textarea rows={2} value={writePrompt} onChange={(e) => setWritePrompt(e.target.value)} />
       </label>
       <label>
@@ -614,7 +624,7 @@ function AddSongView({ onAdd }: { onAdd: (song: Song) => void }) {
         <textarea rows={2} value={action} onChange={(e) => setAction(e.target.value)} />
       </label>
       <label>
-        משפט הצהרה
+        <span>משפט הצהרה {REQ}</span>
         <input value={declaration} onChange={(e) => setDeclaration(e.target.value)} />
       </label>
       <label>
