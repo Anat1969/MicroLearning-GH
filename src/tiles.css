@@ -218,3 +218,232 @@ label {
 .error {
   color: #ffb4ab;
 }
+
+/* ---------- שכבה 2: ברק, עומק, ניגודיות, תנועה, ואייקונים ---------- */
+
+.req {
+  color: #ffb4ab;
+  font-weight: 700;
+  margin-inline-start: 2px;
+}
+
+/* כתיבה: טקסט שחור על משטח בהיר, גדול יותר לקריאה */
+textarea.write {
+  background: #f4f4f2;
+  color: #111111;
+  font-size: 19px;
+  line-height: 1.6;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+textarea.write::placeholder {
+  color: #6b6b70;
+}
+
+/* ברק: הדגשה עדינה בקצה העליון של כל אריח, בלי קו מסגרת */
+.card,
+.poster {
+  position: relative;
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.card::before,
+.poster::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* שכבות עומק: צל רחב רך מתחת לאריח */
+.card:hover,
+.poster:hover {
+  transform: translateY(-2px);
+}
+
+/* כפתורים: הרמה בריחוף, שקיעה בלחיצה */
+.primary,
+.ghost {
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.primary:hover:not(:disabled),
+.ghost:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.primary:active:not(:disabled),
+.ghost:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* ניגודיות: טקסט משני בהיר יותר, וקישורים ברורים */
+:root {
+  --muted: #d4d4d7;
+}
+
+/* תנועה: כניסה קצרה של כל מסך, בלי קפיצות */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stack > * {
+  animation: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* ניווט עם אייקון וטקסט */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab svg {
+  flex: none;
+}
+
+/* פס צר: אייקונים בלבד, והשם לא נשבר לשתי שורות */
+@media (max-width: 440px) {
+  .tab span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .tab {
+    padding: 8px;
+  }
+  .brand {
+    white-space: nowrap;
+    font-size: 16px;
+  }
+  .topbar {
+    gap: 4px;
+  }
+}
+
+/* מסך החזון */
+.vision-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  padding-top: 8px;
+}
+
+.vision-hero h1 {
+  font-size: 30px;
+  line-height: 1.25;
+  margin: 0;
+  font-weight: 800;
+}
+
+.vision-art {
+  width: 220px;
+  height: 220px;
+  overflow: visible;
+}
+
+.vision-ring {
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 6;
+  transform-origin: 160px 160px;
+  animation: ring-in 900ms ease-out both;
+}
+
+.vision-ring.lit {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-dasharray: none;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+}
+
+.vision-tile {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.65));
+  animation: breathe 3.2s ease-in-out infinite;
+  transform-origin: 160px 160px;
+}
+
+@keyframes ring-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.how-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.how-steps li {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.how-steps div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.how-icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: linear-gradient(160deg, #7a7a7f, #4c4c51);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 14px rgba(255, 255, 255, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack > *,
+  .vision-ring,
+  .vision-tile {
+    animation: none;
+  }
+  .card:hover,
+  .poster:hover,
+  .primary:hover:not(:disabled),
+  .ghost:hover:not(:disabled) {
+    transform: none;
+  }
+}
