@@ -14,6 +14,7 @@ import {
 import { CATEGORY_MEANING, CATEGORY_TONE } from './lib/tone';
 import { weekInsight } from './lib/insight';
 import { buildShareCard } from './lib/shareCard';
+import { DailyPoster } from './components/DailyPoster';
 
 type View = 'today' | 'practice' | 'journal' | 'add';
 type Step = 1 | 2 | 3;
@@ -171,21 +172,19 @@ function TodayView(p: TodayProps) {
 
   return (
     <section className="stack">
-      <div className="hero" aria-label={formatDate(p.today)}>
-        <span className="hero-day">{d}</span>
-        <span className="hero-meta">
-          <strong>{monthName}</strong>
-          <span className="muted">יום {weekday.replace('יום ', '')}</span>
-        </span>
-      </div>
+      <DailyPoster
+        tone={tone}
+        day={d}
+        monthName={monthName}
+        weekday={weekday}
+        message={p.song.message}
+        doneCount={p.doneThisWeek}
+      />
 
       <article className="card song" style={{ '--tone': tone } as CSSProperties}>
         <span className="chip">{p.song.category}</span>
         <h1>{p.song.title}</h1>
         <p className="artist">{p.song.artist}</p>
-        <p className="message">
-          <mark>{p.song.message}</mark>
-        </p>
         <a className="link" href={listenUrl(p.song)} target="_blank" rel="noreferrer">
           האזנה בחיפוש חיצוני
         </a>
