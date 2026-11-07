@@ -604,3 +604,26 @@ label {
   padding: 0 0 0 8px;
   border-inline-start: 3px solid var(--line);
 }
+
+/* שחזור הקשתות: ברקע הפוסטר, בצבע התחום, בלי לכסות את הטקסט */
+.poster {
+  position: relative;
+  isolation: isolate;
+  padding-top: 8px;
+}
+
+.poster-rings {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.poster-body {
+  position: relative;
+}
