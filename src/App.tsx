@@ -189,6 +189,7 @@ function TodayView(p: TodayProps) {
         message={p.song.message}
         keyPhrase={p.song.keyPhrase}
         title={p.song.title}
+        doneCount={p.doneThisWeek}
       />
       {thread.length > 0 && (
         <div className="thread">
