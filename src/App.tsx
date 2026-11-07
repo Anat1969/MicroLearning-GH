@@ -8,12 +8,14 @@ import {
   loadStore,
   saveStore,
   songForDate,
+  shiftKey,
   streak,
   weekKeys,
 } from './lib/store';
 import { CATEGORY_MEANING, CATEGORY_TONE } from './lib/tone';
 import { weekInsight } from './lib/insight';
 import { buildShareCard } from './lib/shareCard';
+import { DailyPoster } from './components/DailyPoster';
 
 type View = 'today' | 'practice' | 'journal' | 'add';
 type Step = 1 | 2 | 3;
@@ -166,26 +168,46 @@ function TodayView(p: TodayProps) {
   const tone = CATEGORY_TONE[p.song.category];
   const [y, m, d] = p.today.split('-').map(Number);
   const dayDate = new Date(y, m - 1, d);
+  // עד שלושה ימים שבוצעו בשבעת הימים שלפני היום, מהחדש לישן: הקשר בין הימים (עיקרון 8).
+  const thread: { key: string; song: Song }[] = [];
+  for (let i = 1; i <= 7 && thread.length < 3; i++) {
+    const key = shiftKey(p.today, -i);
+    const entry = p.store.entries[key];
+    const song = entry?.done ? p.songs.find((x) => x.id === entry.songId) : undefined;
+    if (song) thread.push({ key, song });
+  }
   const monthName = dayDate.toLocaleDateString('he-IL', { month: 'long' });
   const weekday = dayDate.toLocaleDateString('he-IL', { weekday: 'long' });
 
   return (
     <section className="stack">
-      <div className="hero" aria-label={formatDate(p.today)}>
-        <span className="hero-day">{d}</span>
-        <span className="hero-meta">
-          <strong>{monthName}</strong>
-          <span className="muted">יום {weekday.replace('יום ', '')}</span>
-        </span>
-      </div>
+      <DailyPoster
+        tone={tone}
+        day={d}
+        monthName={monthName}
+        weekday={weekday}
+        message={p.song.message}
+        keyPhrase={p.song.keyPhrase}
+        title={p.song.title}
+      />
+      {thread.length > 0 && (
+        <div className="thread">
+          <p className="small muted">הרצף שלך לפני היום</p>
+          <ol>
+            {thread.map((t) => (
+              <li key={t.key}>
+                <span className="small muted">{formatDate(t.key)}</span>
+                <span>{t.song.practice.declaration}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       <article className="card song" style={{ '--tone': tone } as CSSProperties}>
         <span className="chip">{p.song.category}</span>
         <h1>{p.song.title}</h1>
         <p className="artist">{p.song.artist}</p>
-        <p className="message">
-          <mark>{p.song.message}</mark>
-        </p>
         <a className="link" href={listenUrl(p.song)} target="_blank" rel="noreferrer">
           האזנה בחיפוש חיצוני
         </a>
@@ -551,6 +573,7 @@ function AddSongView({ onAdd }: { onAdd: (song: Song) => void }) {
       message: message.trim(),
       listenQuery: listenQuery.trim() || `${title.trim()} ${artist.trim()}`.trim(),
       practice: { writePrompt: writePrompt.trim(), action: action.trim() || 'עמדי מול המראה ואמרי את ההצהרה בקול.', declaration: declaration.trim() },
+      keyPhrase: message.trim(),
       verified: false,
     });
   }

@@ -32,7 +32,7 @@ check('manifest is served and in Hebrew RTL', manifest.status === 200 && manifes
 const icon = await page.evaluate(async () => (await fetch('/icon.svg')).status);
 check('icon is served', icon === 200);
 
-const dayText = await page.locator('.hero-day').innerText();
+const dayText = await page.locator('.poster-day').innerText();
 const expectedDay = String(new Date().getDate());
 check('hero shows today day number', dayText.trim() === expectedDay, `got ${dayText}, want ${expectedDay}`);
 
