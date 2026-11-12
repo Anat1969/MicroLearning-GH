@@ -32,15 +32,69 @@ export function dateKey(d: Date = new Date()): string {
   return `${d.getFullYear()}-${m}-${day}`;
 }
 
-function dayNumber(key: string): number {
+export function dayNumber(key: string): number {
   const [y, m, d] = key.split('-').map(Number);
   return Math.floor(Date.UTC(y, m - 1, d) / 86400000);
 }
 
+/** מחולל מספרים פסאודו-אקראי קבוע לזרע נתון (mulberry32). אותו זרע תמיד נותן את אותו סדר. */
+function seeded(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** סדר תמורה של כל השירים לסבב נתון. כל שיר מופיע פעם אחת בכל סבב. */
+function cycleOrder(cycle: number, n: number): number[] {
+  const rand = seeded(Math.imul(cycle + 1, 2654435761) ^ n);
+  const order = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+/** סדר סופי לכל סבב, אחרי התאמה לסבב הקודם. מחושב מהסבב הראשון ומתקדם, עם זיכרון מטמון. */
+const finalCache = new Map<string, number[]>();
+function finalOrder(cycle: number, n: number): number[] {
+  const hit = finalCache.get(`${n}|${cycle}`);
+  if (hit) return hit;
+  const pending: number[] = [];
+  let k = cycle;
+  while (k >= 0 && !finalCache.has(`${n}|${k}`)) {
+    pending.push(k);
+    k--;
+  }
+  let prevLast = k >= 0 ? finalCache.get(`${n}|${k}`)![n - 1] : undefined;
+  for (let i = pending.length - 1; i >= 0; i--) {
+    const c = pending[i];
+    const order = cycleOrder(c, n);
+    if (prevLast !== undefined && n > 1 && order[0] === prevLast) {
+      [order[0], order[1]] = [order[1], order[0]];
+    }
+    finalCache.set(`${n}|${c}`, order);
+    prevLast = order[n - 1];
+  }
+  return finalCache.get(`${n}|${cycle}`)!;
+}
+
+/**
+ * שיר היום: כל שיר מופיע פעם אחת בכל סבב, וסדר הסבב משתנה מסבב לסבב.
+ * בין סבב לסבב מונע מצב שבו אותו שיר מופיע פעמיים ברצף.
+ */
 export function songForDate(key: string, songs: Song[]): Song | undefined {
-  if (songs.length === 0) return undefined;
   const n = songs.length;
-  return songs[((dayNumber(key) % n) + n) % n];
+  if (n === 0) return undefined;
+  const day = dayNumber(key);
+  const cycle = Math.floor(day / n);
+  const offset = ((day % n) + n) % n;
+  return songs[finalOrder(cycle, n)[offset]];
 }
 
 export function shiftKey(key: string, days: number): string {
