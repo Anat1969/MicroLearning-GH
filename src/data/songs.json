@@ -38,5 +38,105 @@
       "רַכֶּבֶת לֹא מַגִּיעָה",
       "אֲנִי הוֹלֶכֶת"
     ]
+  },
+  {
+    "id": "s-003",
+    "title": "Brave",
+    "artist": "Sara Bareilles (2013)",
+    "category": "ביטחון עצמי",
+    "message": "להגיד את האמת שלך בקול, גם כשזה לא נוח.",
+    "keyPhrase": "להגיד את האמת שלך בקול",
+    "listenQuery": "Sara Bareilles Brave",
+    "practice": {
+      "writePrompt": "מה את יודעת על עצמך שעוד לא אמרת בקול רם? כתבי את זה בשורה אחת.",
+      "action": "אמרי את המשפט הזה בקול, פעם אחת, בחדר שבו את לבד.",
+      "declaration": "אני אומרת את האמת שלי, בקול."
+    },
+    "verified": false,
+    "haiku": [
+      "קול שקט בתוכי",
+      "אומר מה שאני יודעת",
+      "ואני עומדת"
+    ]
+  },
+  {
+    "id": "s-004",
+    "title": "Man! I Feel Like a Woman!",
+    "artist": "Shania Twain (1999)",
+    "category": "ביטחון עצמי",
+    "message": "אני מרגישה כמו אישה, ואני לא מתנצלת על זה.",
+    "keyPhrase": "ואני לא מתנצלת על זה",
+    "listenQuery": "Shania Twain Man I Feel Like a Woman",
+    "practice": {
+      "writePrompt": "באיזה רגע היום לא התנצלת על מי שאת? ומה היה קורה אם כן?",
+      "action": "עמדי זקופה ואמרי משפט אחד בלי הקדמה ובלי התנצלות.",
+      "declaration": "אני לא מתנצלת על מי שאני."
+    },
+    "verified": false,
+    "haiku": [
+      "שמלה, צעד, חיוך",
+      "הכתפיים נפתחות לאור",
+      "אני כאן, בגובה"
+    ]
+  },
+  {
+    "id": "s-005",
+    "title": "Girls Just Want to Have Fun",
+    "artist": "Cyndi Lauper (1983)",
+    "category": "אהבה עצמית",
+    "message": "לא כל צעד חייב להיות כבד כדי שיהיה שלך.",
+    "keyPhrase": "לא כל צעד חייב להיות כבד",
+    "listenQuery": "Cyndi Lauper Girls Just Want to Have Fun",
+    "practice": {
+      "writePrompt": "מה הדבר הקל והשובב שהיית עושה היום, אם לא היית שומרת על עצמך כל כך?",
+      "action": "עשי היום דבר קטן ושובב אחד, רק בשביל ההנאה.",
+      "declaration": "מותר לי להנות, והצעד הזה שלי."
+    },
+    "verified": false,
+    "haiku": [
+      "צחוק בלי סיבה",
+      "רגל קלה על המדרכה",
+      "היום שלי הוא"
+    ]
+  },
+  {
+    "id": "s-006",
+    "title": "Feeling Good",
+    "artist": "Nina Simone (1965)",
+    "category": "רוגע",
+    "message": "היום אני מרגישה טוב, והבחירה הזאת שלי.",
+    "keyPhrase": "והבחירה הזאת שלי",
+    "listenQuery": "Nina Simone Feeling Good",
+    "practice": {
+      "writePrompt": "מה בגוף שלך מרגיש טוב עכשיו, ממש עכשיו?",
+      "action": "שימי לב לנשימה שלך דקה אחת, בלי לשנות אותה.",
+      "declaration": "אני מרגישה טוב, ואני בוחרת בזה."
+    },
+    "verified": false,
+    "haiku": [
+      "אוויר נכנס ויוצא",
+      "הגוף זוכר איך להיות",
+      "שקט בתוך הקצב"
+    ]
+  },
+  {
+    "id": "s-007",
+    "title": "I Will Survive",
+    "artist": "Gloria Gaynor (1978)",
+    "category": "התגברות על משבר",
+    "message": "נפלת, קמת, וזו בדיוק הכוח שלך.",
+    "keyPhrase": "וזו בדיוק הכוח שלך",
+    "listenQuery": "Gloria Gaynor I Will Survive",
+    "practice": {
+      "writePrompt": "מה נפל לך השנה, ומה קמת איתו?",
+      "action": "כתבי על דף אחד את הדבר שעברת, וקפלי אותו. הוא כבר לא מגדיר אותך.",
+      "declaration": "עברתי את זה, ואני עדיין כאן."
+    },
+    "verified": false,
+    "haiku": [
+      "נפלתי, קמתי",
+      "צל ישן על הרצפה",
+      "אני עוד כאן"
+    ]
   }
 ]
